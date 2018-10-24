@@ -61,7 +61,29 @@ server.put('/api/zoos/:id', (req, res) => {
     .where({ id: id })
     .update(changes)
     .then(count => {
-        res.status(200).json(count)
+        if(!count || count < 1) {
+            res.status(404).json({message: "No record found"})
+        } else {
+            res.status(200).json(count)
+        }
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+})
+
+server.delete('/api/zoos/:id', (req, res) => {
+    const { id } = req.params;
+
+    db('zoos')
+    .where({ id: id })
+    .delete()
+    .then(count => {
+        if(!count || count < 1) {
+            res.status(404).json({message: "No record to be deleted"})
+        } else {
+            res.status(200).json(count)
+        }
     })
     .catch(err => {
         res.status(500).json(err)
