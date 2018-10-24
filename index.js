@@ -30,11 +30,13 @@ server.get('/api/zoos/:id', (req, res) => {
 
     db('zoos')
     .where({ id: id })
+    .first()
+    
     .then(zoo => {
         res.status(200).json(zoo)
     })
     .catch(err => {
-        res.status(404).json(err)
+        res.status(500).json(err)
     })
 })
 
@@ -45,6 +47,21 @@ server.post('/api/zoos', (req, res) => {
     .into('zoos')
     .then(ids => {
         res.status(201).json(ids)
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+})
+
+server.put('/api/zoos/:id', (req, res) => {
+    const { id } = req.params;
+    const changes = req.body;
+
+    db('zoos')
+    .where({ id: id })
+    .update(changes)
+    .then(count => {
+        res.status(200).json(count)
     })
     .catch(err => {
         res.status(500).json(err)
